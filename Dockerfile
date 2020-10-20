@@ -1,55 +1,62 @@
-FROM alpine:latest
+FROM rust:alpine as tools
 
-ENV RIPGREP_CONFIG_PATH "/home/neovim/.config/ripgrep/config"
-ENV FZF_DEFAULT_COMMAND "rg --files --hidden"
+RUN apk add --no-cache \
+    curl \
+    git \
+    musl-dev
+
+WORKDIR /tools
+
+RUN \
+    # create plugin manager for neovim
+    curl -fLo ./plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; \
+    # create coc-rust-analyzer dependencies
+    git clone https://github.com/rust-analyzer/rust-analyzer.git; \
+    cd rust-analyzer; \
+    cargo xtask install --server
+
+FROM rust:alpine
+
+ENV RIPGREP_CONFIG_PATH=/home/neovim/.config/ripgrep/config \
+    FZF_DEFAULT_COMMAND="rg --files --hidden"
 
 # install neovim and dependencies
 RUN apk add --no-cache \
     neovim neovim-doc \
-    # needed by dockerfile
-    curl \
     # needed by neovim as providers
-    python3-dev py-pip gcc musl-dev \
+    python3-dev py-pip musl-dev \
     nodejs yarn \
     # needed by fzf
     bash ripgrep git
 
-COPY config /home/neovim/.config
-
-RUN adduser -D neovim \
-    && chmod 777 /usr/local/bin \
-    && chown -R neovim:neovim /home/neovim
-
+# add user
+RUN adduser -D neovim
 USER neovim
+
+# add neovim config
+COPY --chown=neovim:neovim config /home/neovim/.config
+
+# add vim-plug
+COPY --chown=neovim:neovim --from=tools /tools/plug.vim /home/neovim/.config/nvim/autoload/
+
+# add rust-analyzer
+COPY --chown=neovim:neovim --from=tools /tools/rust-analyzer/target/release/rust-analyzer /home/neovim/.local/bin/
 
 RUN \
     # install python's neovim plugin
-    pip install pynvim \
+    pip install pynvim; \
     # install node's neovim plugin
-    && yarn global add neovim \
-    # install plugin manager for neovim
-    && curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs \
-    https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
+    yarn global add neovim; \
     # install neovim plugins
-    && nvim --headless +PlugInstall +qall \
+    nvim --headless +PlugInstall +qall; \
     # install coc extensions (one at a time otherwise some fail)
-    && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
-    && nvim --headless +'CocInstall -sync coc-json' +qall \
-    && nvim --headless +'CocInstall -sync coc-yaml' +qall \
-    # && nvim --headless +'CocInstall -sync coc-xml' +qall \
-    && nvim --headless +'CocInstall -sync coc-markdownlint' +qall \
-    && nvim --headless +'CocInstall -sync coc-html' +qall \
-    && nvim --headless +'CocInstall -sync coc-css' +qall \
-    && nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall
-
-# install coc-xml dependencies
-# RUN cd /home/neovim \
-#     openjdk11 \
-#     # install limmex
-#     && git clone https://github.com/eclipse/lemminx.git \
-#     && cd lemminx && ./mvnw clean verify \
-#     && mv org.eclipse.lemminx/taget/org.eclipse.lemminx-uber.jar /home/neovim/.config/coc/extensions/coc-xml-data \
-#     && rm -rf /home/neovim/lemminx
+    nvim --headless +'CocInstall -sync coc-snippets ' +qall; \
+    nvim --headless +'CocInstall -sync coc-json' +qall; \
+    nvim --headless +'CocInstall -sync coc-yaml' +qall; \
+    nvim --headless +'CocInstall -sync coc-markdownlint' +qall; \
+    nvim --headless +'CocInstall -sync coc-html' +qall; \
+    nvim --headless +'CocInstall -sync coc-css' +qall; \
+    nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall; 
 
 WORKDIR /data
 
