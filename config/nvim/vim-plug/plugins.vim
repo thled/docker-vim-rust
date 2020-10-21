@@ -22,6 +22,12 @@ Plug 'tpope/vim-commentary'
 " surround
 Plug 'tpope/vim-surround'
 
+" additional text objects
+Plug 'wellle/targets.vim'
+
+"switch true/false
+Plug 'zef/vim-cycle'
+
 " rust lint
 Plug 'rust-lang/rust.vim'
 
