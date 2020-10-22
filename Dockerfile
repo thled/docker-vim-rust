@@ -27,7 +27,7 @@ RUN apk add --no-cache \
     python3-dev py-pip musl-dev \
     nodejs yarn \
     # needed by fzf
-    bash ripgrep git
+    bash file ripgrep git
 
 # add user
 RUN adduser -D neovim
