@@ -56,9 +56,9 @@ RUN \
     nvim --headless +'CocInstall -sync coc-markdownlint' +qall; \
     nvim --headless +'CocInstall -sync coc-html' +qall; \
     nvim --headless +'CocInstall -sync coc-css' +qall; \
-    nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall \
-    # install formatter
-    rustup component add rustfmt;
+    nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall; \
+    # install rust formatter
+    rustup component add rustfmt --toolchain 1.47.0-x86_64-unknown-linux-musl
 
 WORKDIR /data
 
