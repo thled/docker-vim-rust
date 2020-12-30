@@ -1,4 +1,4 @@
-FROM rust:alpine as tools
+FROM rust:1.48.0-alpine3.12 as tools
 
 RUN apk add --no-cache \
     curl \
@@ -58,7 +58,7 @@ RUN \
     nvim --headless +'CocInstall -sync coc-css' +qall; \
     nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall; \
     # install rust formatter
-    rustup component add rustfmt --toolchain 1.47.0-x86_64-unknown-linux-musl
+    rustup component add rustfmt --toolchain 1.48.0-x86_64-unknown-linux-musl
 
 WORKDIR /data
 
