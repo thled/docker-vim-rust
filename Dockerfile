@@ -1,4 +1,4 @@
-FROM rust:1.48.0-alpine3.12 as tools
+FROM rust:1.52.1-alpine3.13 as tools
 
 RUN apk add --no-cache \
     curl \
@@ -9,13 +9,13 @@ WORKDIR /tools
 
 RUN \
     # create plugin manager for neovim
-    curl -fLo ./plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim; \
+    curl -fLo ./plug.vim https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim \
     # create coc-rust-analyzer dependencies
-    git clone https://github.com/rust-analyzer/rust-analyzer.git; \
-    cd rust-analyzer; \
-    cargo xtask install --server
+    && git clone https://github.com/rust-analyzer/rust-analyzer.git \
+    && cd rust-analyzer \
+    && cargo xtask install --server
 
-FROM rust:alpine
+FROM rust:1.52.1-alpine3.13
 
 ENV RIPGREP_CONFIG_PATH=/home/neovim/.config/ripgrep/config \
     FZF_DEFAULT_COMMAND="rg --files --hidden"
@@ -27,7 +27,9 @@ RUN apk add --no-cache \
     python3-dev py-pip musl-dev \
     nodejs yarn \
     # needed by fzf
-    bash file ripgrep git
+    bash file ripgrep git \
+    # needed by rust
+    g++
 
 # add user
 RUN adduser -D neovim
@@ -44,21 +46,19 @@ COPY --chown=neovim:neovim --from=tools /tools/rust-analyzer/target/release/rust
 
 RUN \
     # install python's neovim plugin
-    pip install pynvim; \
+    pip install pynvim \
     # install node's neovim plugin
-    yarn global add neovim; \
+    && yarn global add neovim \
     # install neovim plugins
-    nvim --headless +PlugInstall +qall; \
+    && nvim --headless +PlugInstall +qall \
     # install coc extensions (one at a time otherwise some fail)
-    nvim --headless +'CocInstall -sync coc-snippets ' +qall; \
-    nvim --headless +'CocInstall -sync coc-json' +qall; \
-    nvim --headless +'CocInstall -sync coc-yaml' +qall; \
-    nvim --headless +'CocInstall -sync coc-markdownlint' +qall; \
-    nvim --headless +'CocInstall -sync coc-html' +qall; \
-    nvim --headless +'CocInstall -sync coc-css' +qall; \
-    nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall; \
+    && nvim --headless +'CocInstall -sync coc-snippets ' +qall \
+    && nvim --headless +'CocInstall -sync coc-json' +qall \
+    && nvim --headless +'CocInstall -sync coc-toml' +qall \
+    && nvim --headless +'CocInstall -sync coc-markdownlint' +qall \
+    && nvim --headless +'CocInstall -sync coc-rust-analyzer' +qall \
     # install rust formatter
-    rustup component add rustfmt --toolchain 1.48.0-x86_64-unknown-linux-musl
+    && rustup component add rustfmt
 
 WORKDIR /data
 
