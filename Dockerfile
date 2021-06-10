@@ -68,6 +68,8 @@ RUN \
     && yarn global add neovim \
     # install neovim plugins
     && nvim --headless +PlugInstall +qall \
+    # install treesitter languages
+    && nvim --headless +"TSInstallSync rust" +"TSInstallSync toml" +q \
     # install rust formatter
     && rustup component add rustfmt
 
