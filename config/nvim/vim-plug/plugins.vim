@@ -9,6 +9,9 @@ Plug 'itchyny/lightline.vim'
 " syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 
+" lsp config helper
+Plug 'neovim/nvim-lspconfig'
+
 " fuzzy finder
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'

@@ -59,7 +59,7 @@ COPY --chown=neovim:neovim config /home/neovim/.config
 COPY --chown=neovim:neovim --from=tools /tools/plug.vim /home/neovim/.config/nvim/autoload/
 
 # add rust-analyzer
-COPY --chown=neovim:neovim --from=tools /tools/rust-analyzer/target/release/rust-analyzer /home/neovim/.local/bin/
+COPY --from=tools /tools/rust-analyzer/target/release/rust-analyzer /usr/local/bin/
 
 RUN \
     # install python's neovim plugin
