@@ -17,6 +17,9 @@ Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
+" autocomplete
+Plug 'hrsh7th/nvim-compe'
+
 " git
 Plug 'mhinz/vim-signify'
 
