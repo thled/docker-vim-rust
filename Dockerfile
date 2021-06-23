@@ -1,4 +1,4 @@
-FROM rust:1.52.1-alpine3.13 as tools
+FROM rust:1.53-alpine3.13 as tools
 
 RUN apk add --no-cache \
     git \
@@ -31,7 +31,7 @@ RUN \
     && cd rust-analyzer \
     && cargo xtask install --server
 
-FROM rust:1.52.1-alpine3.13
+FROM rust:1.53-alpine3.13
 
 ENV RIPGREP_CONFIG_PATH=/home/neovim/.config/ripgrep/config
 

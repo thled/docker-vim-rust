@@ -29,7 +29,7 @@ Plug 'tpope/vim-surround'
 " additional text objects
 Plug 'wellle/targets.vim'
 
-"switch true/false
+" switch true/false
 Plug 'zef/vim-cycle'
 
 call plug#end()
