@@ -22,5 +22,6 @@ highlight ColorColumn ctermbg=238 guibg=lightgrey
 " terminal esc
 tnoremap <Esc> <C-\><C-n>
 
-" rust
-let g:rustfmt_autosave = 1
+" allow unsaved buffer switch
+set hidden
+
