@@ -4,7 +4,7 @@ call plug#begin()
 Plug 'morhetz/gruvbox'
 
 " statusline
-Plug 'itchyny/lightline.vim'
+Plug 'hoob3rt/lualine.nvim'
 
 " syntax highlighting
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
