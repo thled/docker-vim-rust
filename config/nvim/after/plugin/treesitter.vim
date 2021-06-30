@@ -1,4 +1,4 @@
-if !exists('g:nvim-treesitter')
+if !exists('g:loaded_nvim_treesitter')
     finish
 endif
 
