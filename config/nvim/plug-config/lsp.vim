@@ -1,4 +1,7 @@
-if filereadable(expand("~/.config/nvim/plugged/nvim-lspconfig/lua/lspconfig.lua"))
+if !exists('g:lspconfig')
+    finish
+endif
+
 lua << EOF
 local nvim_lsp = require('lspconfig')
 
@@ -31,6 +34,5 @@ for _, lsp in ipairs(servers) do
     nvim_lsp[lsp].setup { on_attach = on_attach }
 end
 EOF
-endif
 
 set signcolumn=yes

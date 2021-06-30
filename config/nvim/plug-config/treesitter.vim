@@ -1,4 +1,7 @@
-if filereadable(expand("~/.config/nvim/plugged/nvim-treesitter/lua/nvim-treesitter/configs.lua"))
+if !exists('g:nvim-treesitter')
+    finish
+endif
+
 lua <<EOF
 require'nvim-treesitter.configs'.setup {
   highlight = {
@@ -6,4 +9,3 @@ require'nvim-treesitter.configs'.setup {
   },
 }
 EOF
-endif
